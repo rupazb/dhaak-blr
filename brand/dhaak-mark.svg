@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Dhaak">
+  <defs>
+    <clipPath id="body"><path d="M150,212 C215,184 330,186 392,216 L392,364 C330,394 215,396 150,368 Z"/></clipPath>
+  </defs>
+  <g transform="translate(30 40) rotate(-16 256 290)">
+    <!-- kash/feather plume -->
+    <g stroke="#7A0F3A" stroke-width="5" stroke-linejoin="round">
+      <path d="M318,206 C282,150 270,96 300,40 C330,92 344,150 338,206 Z" fill="#C2185B"/>
+      <path d="M338,206 C330,140 346,86 392,52 C398,112 380,164 352,212 Z" fill="#E8559A"/>
+      <path d="M352,212 C368,156 404,118 452,108 C436,162 404,196 362,220 Z" fill="#F48FB8"/>
+      <path d="M300,212 C262,176 230,140 222,96 C262,112 296,150 318,206 Z" fill="#E8559A"/>
+    </g>
+    <g stroke="#7A0F3A" stroke-width="3" fill="none" opacity=".55">
+      <path d="M326,200 C306,150 300,100 300,52"/><path d="M344,204 C346,150 360,100 388,64"/>
+      <path d="M358,212 C380,170 410,138 444,116"/><path d="M308,206 C282,170 254,140 232,106"/>
+    </g>
+    <!-- barrel -->
+    <path d="M150,212 C215,184 330,186 392,216 L392,364 C330,394 215,396 150,368 Z" fill="#F2A516"/>
+    <g clip-path="url(#body)">
+      <path d="M180,180 L214,180 L200,400 L166,400 Z" fill="#E8590C"/>
+      <path d="M240,180 L274,180 L268,400 L234,400 Z" fill="#E8590C"/>
+      <path d="M300,180 L334,180 L338,400 L304,400 Z" fill="#E8590C"/>
+      <rect x="352" y="180" width="40" height="230" fill="#A4161A"/>
+      <g fill="#FFF3D6"><circle cx="372" cy="232" r="6"/><circle cx="372" cy="262" r="6"/><circle cx="372" cy="292" r="6"/><circle cx="372" cy="322" r="6"/><circle cx="372" cy="352" r="6"/></g>
+    </g>
+    <path d="M150,212 C215,184 330,186 392,216 L392,364 C330,394 215,396 150,368 Z" fill="none" stroke="#2B1B14" stroke-width="8" stroke-linejoin="round"/>
+    <ellipse cx="392" cy="290" rx="20" ry="74" fill="#C2410C" stroke="#2B1B14" stroke-width="8"/>
+    <!-- drumhead -->
+    <ellipse cx="150" cy="290" rx="40" ry="80" fill="#FFF8EE" stroke="#2B1B14" stroke-width="9"/>
+    <ellipse cx="150" cy="290" rx="16" ry="34" fill="#2B1B14" opacity=".9"/>
+    <!-- sticks -->
+    <path d="M58,196 L146,282" stroke="#7A3B12" stroke-width="11" stroke-linecap="round"/>
+    <path d="M48,360 L128,312" stroke="#7A3B12" stroke-width="11" stroke-linecap="round"/>
+  </g>
+</svg>

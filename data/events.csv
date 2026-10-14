@@ -1,0 +1,23 @@
+pandal_id,date,start,end,title,kind,time_confirmed,source
+*,2026-10-15,17:00,22:00,Panchami: Anandamela at many pujos,festival,FALSE,
+*,2026-10-16,18:00,20:00,Shashthi: Bodhan (Belur Math 6:15 pm),ritual,TRUE,belurmath.org
+*,2026-10-18,07:00,11:00,Saptami: Nabapatrika snan & morning puja,ritual,FALSE,
+*,2026-10-19,08:00,10:30,Ashtami: Pushpanjali (most pujos),anjali,FALSE,
+*,2026-10-19,10:28,11:16,Sandhi Puja (Belur Math timing),sandhi,TRUE,belurmath.org
+*,2026-10-20,19:00,22:00,Navami: dhunuchi naach evenings,cultural,FALSE,
+*,2026-10-21,10:00,15:00,Bijoya Dashami: Sindoor Khela,sindoor,FALSE,
+BLR001,2026-10-15,17:00,22:00,Anandamela,festival,FALSE,S1
+BLR005,2026-10-15,17:00,22:00,Anandamela,festival,FALSE,S1
+BLR007,2026-10-15,17:00,22:00,Anandamela & dhaki competition,festival,FALSE,S1
+BLR003,2026-10-15,17:00,22:00,Anandamela,festival,FALSE,S1
+BLR017,2026-10-15,17:00,22:00,Anandamela,festival,FALSE,S1
+BLR027,2026-10-15,17:00,22:00,Anandamela,festival,FALSE,S1
+BLR037,2026-10-15,17:00,22:00,Anandamela,festival,FALSE,S1
+BLR049,2026-10-15,18:30,20:30,Anandamela,festival,TRUE,S1
+BLR050,2026-10-15,19:00,21:30,Anandamela,festival,FALSE,S1
+BLR038,2026-10-18,19:00,22:00,Lopamudra Mitra live,cultural,FALSE,S1
+BLR036,2026-10-19,19:00,22:00,Rahul Dutta live,cultural,FALSE,"S1,S2"
+BLR054,2026-10-19,19:00,22:00,Lopamudra Mitra live,cultural,FALSE,S1
+BLR010,2026-10-19,19:00,21:00,Chhau dance,cultural,TRUE,S1
+BLR036,2026-10-20,19:00,22:00,Lopamudra Mitra live,cultural,FALSE,"S1,S2"
+BLR042,2026-10-20,19:00,22:30,Dhunuchi & dandiya night,cultural,FALSE,S11

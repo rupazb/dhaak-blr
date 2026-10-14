@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Dhaak · Bengaluru Pujo Live</title>
+<meta name="description" content="Open-source live map of Durga Pujas in Bengaluru: crowd pulse, must-catch moments and a crowd-aware pandal-hopping route planner." />
+<meta name="theme-color" content="#A4161A" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Dhaak" />
+<meta property="og:title" content="Dhaak · Bengaluru Pujo Live" />
+<meta property="og:description" content="Which pandals are packed right now, what's on tonight, and the fastest route to hop them all." />
+<meta property="og:image" content="icons/icon-512.png" />
+<link rel="icon" type="image/svg+xml" href="brand/dhaak-mark.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Hind+Siliguri:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+<link rel="stylesheet" href="css/dhaak.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"><img src="brand/dhaak-mark.svg" alt="" /></span>
+    <div class="brand-text">
+      <strong>Dhaak</strong>
+      <span>Bengaluru Pujo Live · শারদীয়া ২০২৬</span>
+    </div>
+  </div>
+  <nav class="daystrip" id="daystrip" aria-label="Puja days"></nav>
+  <div class="topbar-right">
+    <div class="livepill" id="livepill" title="Crowd reports in the last hour"><i></i><span id="livepill-text">Loading…</span></div>
+    <select id="timetravel" class="timetravel" title="Demo: preview the map at a different time" hidden></select>
+  </div>
+</header>
+<div class="saree-border" aria-hidden="true"></div>
+<div class="demo-banner" id="demo-banner" hidden>
+  <strong>Demo mode.</strong> Crowd pulse is <em>simulated</em><span class="hide-sm"> from the crowd model, since no backend is connected yet</span>. Pandal list is real<span class="hide-sm"> (research snapshot, 14 Oct 2026)</span>. Use the time menu to preview puja nights.
+  <button type="button" id="demo-banner-close" aria-label="Dismiss">×</button>
+</div>
+
+<main class="layout">
+  <aside class="panel" id="panel">
+    <div class="sheet-handle" id="sheet-handle" aria-hidden="true"><span></span></div>
+    <div class="tabs" role="tablist">
+      <button role="tab" class="tab active" data-tab="live">Live</button>
+      <button role="tab" class="tab" data-tab="explore">Explore</button>
+      <button role="tab" class="tab" data-tab="plan">Plan route <b id="plan-count" class="count" hidden>0</b></button>
+      <button role="tab" class="tab" data-tab="contribute">Contribute</button>
+    </div>
+
+    <!-- LIVE -->
+    <section class="tabpane active" id="tab-live">
+      <div class="hero" id="live-hero"></div>
+      <div class="block">
+        <div class="block-head"><h3>Busy right now</h3><span class="muted" id="hot-note"></span></div>
+        <div id="hot-list" class="mini-list"></div>
+      </div>
+      <div class="block">
+        <div class="block-head"><h3>Calm right now, go now</h3><span class="muted">popular pujos with short queues</span></div>
+        <div id="calm-list" class="mini-list"></div>
+      </div>
+      <div class="block">
+        <div class="block-head"><h3 id="moments-title">Must-catch moments</h3></div>
+        <div id="moments" class="moments"></div>
+      </div>
+      <div class="block">
+        <div class="block-head"><h3>Pulse feed</h3><span class="muted" id="feed-updated"></span></div>
+        <div id="feed" class="feed"></div>
+      </div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section class="tabpane" id="tab-explore">
+      <div class="searchbar">
+        <input id="search" type="search" placeholder="Search pujo, area, venue…" autocomplete="off" />
+        <select id="sort">
+          <option value="buzz">Most talked-about</option>
+          <option value="near">Nearest to me</option>
+          <option value="calm">Calmest now</option>
+          <option value="old">Oldest first</option>
+          <option value="name">A–Z</option>
+        </select>
+      </div>
+      <div class="chips" id="zone-chips"></div>
+      <div class="chips" id="filter-chips"></div>
+      <div class="muted small" id="explore-count"></div>
+      <div id="pandal-list" class="cards"></div>
+    </section>
+
+    <!-- PLAN -->
+    <section class="tabpane" id="tab-plan">
+      <div class="seg" id="plan-mode">
+        <button class="active" data-mode="pick">I'll pick the pandals</button>
+        <button data-mode="auto">Plan my evening for me</button>
+      </div>
+
+      <div class="form-grid">
+        <label>Start from
+          <div class="row">
+            <select id="start-src">
+              <option value="gps">My location</option>
+              <option value="map">Pick on map</option>
+            </select>
+            <span class="loc-note" id="start-note">Not set</span>
+          </div>
+        </label>
+        <label>Finish
+          <select id="end-src">
+            <option value="none">Wherever the last pandal is</option>
+            <option value="start">Back to where I started</option>
+            <option value="map">Pick on map</option>
+          </select>
+        </label>
+        <label>Day
+          <select id="plan-day"></select>
+        </label>
+        <label>Leave at
+          <input id="plan-time" type="time" value="17:30" step="900" />
+        </label>
+        <label>Getting around
+          <select id="vehicle">
+            <option value="car">Car / cab</option>
+            <option value="bike">Two-wheeler</option>
+          </select>
+        </label>
+        <label>Time inside each pandal
+          <select id="dwell">
+            <option value="15">Quick darshan (15 min)</option>
+            <option value="25" selected>Darshan + photos (25 min)</option>
+            <option value="45">Bhog / food stalls (45 min)</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="check"><input type="checkbox" id="avoid-crowds" /> Hate queues? Weigh crowd waits double</label>
+      <label class="check"><input type="checkbox" id="catch-events" checked /> Try to catch scheduled moments (cultural nights, Anandamela) when it's on the way</label>
+
+      <div id="pick-pane">
+        <div class="muted small">Add pandals from <a href="#" data-goto="explore">Explore</a> or by tapping pins on the map. Up to 25; exact optimum up to 12.</div>
+        <div id="selected-chips" class="selchips"></div>
+      </div>
+
+      <div id="auto-pane" hidden>
+        <div class="form-grid">
+          <label>Hours I have
+            <select id="budget">
+              <option value="120">2 hours</option><option value="180">3 hours</option>
+              <option value="240" selected>4 hours</option><option value="300">5 hours</option>
+              <option value="360">6 hours</option><option value="480">8 hours</option>
+            </select>
+          </label>
+          <label>Stay within
+            <select id="radius">
+              <option value="6">6 km of start</option><option value="10" selected>10 km</option>
+              <option value="15">15 km</option><option value="40">Anywhere in the city</option>
+            </select>
+          </label>
+        </div>
+        <div class="chips" id="interest-chips"></div>
+      </div>
+
+      <button class="primary" id="optimise-btn">Optimise my route</button>
+      <div class="status" id="plan-status"></div>
+      <div id="plan-result"></div>
+    </section>
+
+    <!-- CONTRIBUTE -->
+    <section class="tabpane" id="tab-contribute">
+      <div class="seg" id="contrib-mode">
+        <button class="active" data-mode="checkin">Crowd check-in</button>
+        <button data-mode="rate">Rate</button>
+        <button data-mode="add">Add / fix a pujo</button>
+        <button data-mode="committee">Committee</button>
+      </div>
+
+      <form id="form-checkin" class="cform">
+        <p class="muted small">You're the live layer. Reports within 400 m of the pandal are marked <b>verified</b> and count more. Reports fade after 90 min.</p>
+        <label>Pandal <select id="ci-pandal" required></select></label>
+        <div class="crowd-picker" id="ci-crowd" role="radiogroup" aria-label="How crowded?"></div>
+        <label>Queue to see the pratima <select id="ci-wait">
+          <option value="0">No queue</option><option value="5">~5 min</option><option value="15">~15 min</option>
+          <option value="30">~30 min</option><option value="60">1 hour+</option></select></label>
+        <label>Anything useful? <input id="ci-note" maxlength="200" placeholder="Bhog counter open, parking full at gate 2, dhunuchi at 8…" /></label>
+        <label>Photo (optional) <input id="ci-photo" type="file" accept="image/*" capture="environment" /></label>
+        <button class="primary" type="submit">Post check-in</button>
+        <div class="status" id="ci-status"></div>
+      </form>
+
+      <form id="form-rate" class="cform" hidden>
+        <p class="muted small">One rating per pujo per year from each phone. Ratings are kept by year, so the app builds a history of how each pujo does over time.</p>
+        <label>Pandal <select id="rt-pandal" required></select></label>
+        <div id="rt-stars"></div>
+        <button class="primary" type="submit">Save rating</button>
+        <div class="status" id="rt-status"></div>
+      </form>
+
+      <form id="form-add" class="cform" hidden>
+        <p class="muted small">Missing pujo, wrong pin or a venue that moved this year? Suggestions go to a moderation queue in the Sheet.</p>
+        <div class="seg seg-sm" id="add-kind">
+          <button type="button" class="active" data-kind="new">Missing pujo</button>
+          <button type="button" data-kind="fix">Fix a pin / venue</button>
+        </div>
+        <label id="fx-pandal-wrap" hidden>Pandal <select id="fx-pandal"></select></label>
+        <label id="ad-name-wrap">Name of the pujo <input id="ad-name" maxlength="120" /></label>
+        <label>Area <input id="ad-area" maxlength="80" /></label>
+        <label>Venue / address <input id="ad-venue" maxlength="160" /></label>
+        <div class="row">
+          <button type="button" class="ghost" id="ad-pick">Tap the map to set the pin</button>
+          <span class="loc-note" id="ad-loc">no pin yet</span>
+        </div>
+        <label>Notes (since when, timings, link) <input id="ad-notes" maxlength="400" /></label>
+        <button class="primary" type="submit">Send for review</button>
+        <div class="status" id="ad-status"></div>
+      </form>
+
+      <form id="form-committee" class="cform" hidden>
+        <p class="muted small">For organisers. Your PIN (from the Dhaak maintainers) lets you post official updates that show with a ✓ badge.</p>
+        <label>Your pujo <select id="cm-pandal" required></select></label>
+        <label>Update type <select id="cm-kind">
+          <option value="bhog_open">Bhog counter open</option><option value="bhog_closed">Bhog finished</option>
+          <option value="queue">Queue update</option><option value="event_now">Programme starting</option>
+          <option value="gates_closed">Gates closed to visitors</option><option value="gates_open">Gates open again</option>
+          <option value="venue">Venue / parking info</option><option value="notice">Other notice</option></select></label>
+        <label>Message <input id="cm-msg" maxlength="240" required /></label>
+        <label>Committee PIN <input id="cm-pin" type="password" inputmode="numeric" required /></label>
+        <button class="primary" type="submit">Post official update</button>
+        <div class="status" id="cm-status"></div>
+      </form>
+    </section>
+
+    <!-- DETAIL DRAWER -->
+    <section class="detail" id="detail" hidden aria-live="polite"></section>
+  </aside>
+
+  <div class="mapwrap">
+    <div id="map"></div>
+    <div class="mapctl">
+      <button id="btn-style" title="Change map style">Map: Voyager</button>
+      <button id="btn-heat" class="on" title="Crowd heat">Heat</button>
+      <button id="btn-labels" title="Names">Names</button>
+      <button id="btn-locate" title="My location">◎</button>
+    </div>
+    <div class="map-hint" id="map-hint" hidden></div>
+    <div class="legend">
+      <span><i class="l1"></i>Empty</span><span><i class="l2"></i>Easy</span><span><i class="l3"></i>Busy</span>
+      <span><i class="l4"></i>Packed</span><span><i class="l5"></i>Jam</span><span><i class="lx"></i>Pin unverified</span>
+    </div>
+  </div>
+</main>
+
+<!-- MOBILE BOTTOM NAV (thumb zone) -->
+<nav class="bottomnav" id="bottomnav" aria-label="Main">
+  <button data-nav="live" class="active"><i>◉</i><span>Live</span></button>
+  <button data-nav="explore"><i>☰</i><span>Explore</span></button>
+  <button data-nav="here" class="here"><i><img src="brand/dhaak-mark.svg" alt="" /></i><span>I'm here</span></button>
+  <button data-nav="plan"><i>⇢</i><span>Plan</span><b class="count" id="nav-plan-count" hidden>0</b></button>
+  <button data-nav="contribute"><i>＋</i><span>Add</span></button>
+</nav>
+
+<!-- ONE-TAP "I'M HERE" CHECK-IN -->
+<div class="qc" id="qc" hidden role="dialog" aria-modal="true" aria-labelledby="qc-title">
+  <div class="qc-card">
+    <button class="qc-close" id="qc-close" aria-label="Close">×</button>
+    <h3 id="qc-title">Finding the pujo you're at…</h3>
+    <p class="qc-sub" id="qc-sub"></p>
+    <select id="qc-pandal" hidden></select>
+    <div class="qc-label">Queue to see the pratima <span class="muted">(optional)</span></div>
+    <div class="qc-wait" id="qc-wait">
+      <button data-wait="0">None</button><button data-wait="5">5 min</button><button data-wait="15">15 min</button>
+      <button data-wait="30">30 min</button><button data-wait="60">1 hr+</button>
+    </div>
+    <div class="qc-label">How crowded is it? <b>Tap to send</b></div>
+    <div class="qc-crowd" id="qc-crowd"></div>
+    <div class="row qc-extra">
+      <label class="ghost qc-photo">＋ Photo<input type="file" id="qc-photo" accept="image/*" capture="environment" hidden /></label>
+      <span class="loc-note" id="qc-photo-note"></span>
+    </div>
+    <div class="status" id="qc-status"></div>
+  </div>
+</div>
+
+<!-- INSTALL HINT (iPhone has no install prompt) -->
+<div class="toast" id="toast" hidden></div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="vendor/leaflet/leaflet-heat.js"></script>
+<script src="data/seed.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

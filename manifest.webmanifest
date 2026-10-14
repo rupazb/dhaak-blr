@@ -1,0 +1,23 @@
+{
+  "name": "Dhaak: Bengaluru Pujo Live",
+  "short_name": "Dhaak",
+  "description": "Live map of Durga Pujas in Bengaluru: crowd pulse, must-catch moments and a crowd-aware pandal-hopping route planner.",
+  "lang": "en-IN",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8EE",
+  "theme_color": "#A4161A",
+  "categories": ["travel", "navigation", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "I'm here: report crowd", "short_name": "I'm here", "url": "./?action=here", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Plan my evening", "short_name": "Plan", "url": "./?tab=plan", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
